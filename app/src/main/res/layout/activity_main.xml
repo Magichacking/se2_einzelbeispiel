@@ -10,92 +10,76 @@
         android:id="@+id/Mtknr_eingeben"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="210dp"
-        android:layout_marginEnd="101dp"
-        android:layout_marginBottom="473dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginBottom="9dp"
         android:ems="10"
         android:inputType="number"
         android:minHeight="48dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="SpeakableTextPresentCheck" />
+        app:layout_constraintBottom_toTopOf="@+id/sendbutton"
+        app:layout_constraintStart_toStartOf="@+id/Mtknr"
+        app:layout_constraintTop_toBottomOf="@+id/Mtknr"
+        tools:ignore="SpeakableTextPresentCheck"
+        android:autofillHints="" />
 
     <Button
         android:id="@+id/sendbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="282dp"
-        android:layout_marginEnd="200dp"
-        android:layout_marginBottom="401dp"
+        android:layout_width="140dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="267dp"
+        android:layout_marginBottom="418dp"
         android:onClick="onClick"
         android:text="Send to server"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <TextView
-        android:id="@+id/Mtknr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="73dp"
-        android:layout_marginTop="152dp"
-        android:layout_marginEnd="74dp"
-        android:layout_marginBottom="549dp"
-        android:text="Matrikelnummer eingeben:"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/serverant"
+        android:id="@+id/Mtknr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="134dp"
-        android:layout_marginTop="389dp"
-        android:layout_marginEnd="138dp"
-        android:layout_marginBottom="312dp"
-        android:text="Serverantwort"
+        android:layout_marginTop="152dp"
+        android:layout_marginBottom="171dp"
+        android:text="Matrikelnummer eingeben:"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/berechne"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="0dp"
+        android:layout_width="174dp"
         android:layout_height="0dp"
-        android:layout_marginStart="145dp"
-        android:layout_marginTop="454dp"
-        android:layout_marginEnd="146dp"
-        android:layout_marginBottom="247dp"
+        android:layout_marginBottom="128dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/serverant" />
+
+    <TextView
+        android:id="@+id/serverant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="17dp"
+        android:layout_marginBottom="22dp"
+        android:text="Serverantwort"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/berechne" />
 
     <Button
         android:id="@+id/berechne"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="245dp"
-        android:layout_marginTop="285dp"
-        android:layout_marginEnd="62dp"
-        android:layout_marginBottom="398dp"
+        android:layout_marginStart="17dp"
+        android:layout_marginBottom="48dp"
         android:onClick="onClick"
         android:text="berechnen"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/serverant"
+        app:layout_constraintStart_toStartOf="@+id/sendbutton"
+        app:layout_constraintTop_toBottomOf="@+id/Mtknr" />
 
 </android.support.constraint.ConstraintLayout>
