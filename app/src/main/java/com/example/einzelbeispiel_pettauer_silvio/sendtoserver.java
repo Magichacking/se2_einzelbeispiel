@@ -2,32 +2,46 @@ package com.example.einzelbeispiel_pettauer_silvio;
 
 import android.os.AsyncTask;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class sendtoserver extends AsyncTask<String,Void,Void> {
+public class sendtoserver extends Thread {
 
         Socket s;
-        ServerSocket ss;
         DataOutputStream dos;
         PrintWriter pw;
+        BufferedReader brd;
+        BufferedReader brdanswer;
+        InputStream str;
+        String answer;
 
-    protected Void doInBackground(String... voids) {
+    public sendtoserver(InputStream str) {
+        this.str = str;
+    }
 
-        String message = voids[0];
+    protected String sendmsg(InputStream msg) {
+
+        InputStream message = msg;
 
         try {
 
-            ServerSocket ss = new ServerSocket(53212);
-            s = ss.accept();
+            s = new Socket("se2-isys.aau.at",53212);
+            brd = new BufferedReader(new InputStreamReader(message));
+            brdanswer = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            dos =  new DataOutputStream(s.getOutputStream());
             pw = new PrintWriter(s.getOutputStream());
-            pw.write(message);
-            pw.flush();
-            pw.close();
+
+            String servermsg = brd.readLine();
+            dos.writeBytes(servermsg);
+            String answer = brdanswer.readLine();
             s.close();
+            return answer;
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -35,6 +49,16 @@ public class sendtoserver extends AsyncTask<String,Void,Void> {
         return null;
     }
 
-    public void execute(String toString) {
+    @Override
+    public void run() {
+        try {
+            answer = sendmsg(str);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getanswer() {
+        return answer;
     }
 }

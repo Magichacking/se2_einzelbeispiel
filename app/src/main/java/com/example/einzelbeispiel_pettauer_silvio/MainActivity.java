@@ -1,114 +1,128 @@
 package com.example.einzelbeispiel_pettauer_silvio;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.StrictMode;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.Socket;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collections;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText et;
-    EditText etb;
     Button btn;
+    Button send;
     TextView tv;
-    //final String urlstr = "se2-isys.aau.at";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().build();
-        StrictMode.setThreadPolicy(policy);
-
         et = (EditText) findViewById(R.id.Mtknr_eingeben);
+        send = (Button) findViewById(R.id.sendbutton);
         btn = (Button) findViewById(R.id.berechne);
 
-        Thread myThread = new Thread(new MyServerThread());
-        myThread.start();
+        send.setOnClickListener(this);
+        btn.setOnClickListener(this);
+
     }
-
-    class MyServerThread implements Runnable{
-        Socket s;
-        ServerSocket ss;
-        InputStreamReader isr;
-        BufferedReader bufferedReader;
-        Handler h = new Handler();
-        String msg;
-
-        @Override
-        public void run() {
-            try {
-                ss = new ServerSocket(53212);
-
-                while (true){
-
-                    s = ss.accept();
-                    isr = new InputStreamReader(s.getInputStream());
-                    bufferedReader = new BufferedReader(isr);
-                    msg = bufferedReader.readLine();
-
-                    h.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
+    @Override
     public void onClick(View view) {
 
-        if (internetconnection()) {
-            sendtoserver messageSender = new sendtoserver();
-            //messageSender.doInBackground(et.getText().toString());
-            messageSender.execute(tv.getText().toString());
+        //if (internetconnection()) {
+        String answer = "";
+        switch (view.getId()) {
+            case R.id.sendbutton:
+                InputStream str = new ByteArrayInputStream(tv.getText().toString().getBytes(StandardCharsets.UTF_8));
+                sendtoserver messageSender = new sendtoserver(str);
+                messageSender.start();
 
-        } else {
-            Toast.makeText(getApplicationContext(), "No Internet Connection!", Toast.LENGTH_SHORT).show();
+                try {
+                    messageSender.join(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                answer = messageSender.getanswer();
+                break;
+            case R.id.berechne:
+                answer = berechnung(tv.getText().toString());
         }
+        tv.setText(answer);
+
+
+        /*} else {
+        Toast.makeText(getApplicationContext(), "No Internet Connection!", Toast.LENGTH_SHORT).show();
+        }*/
 
     }
 
-    public void berechnung(View view){
 
+
+    public String berechnung(String input) {
+        {
+            // Current indexes from left and right
+            char[] arr = new char[input.length()];
+
+            // Copy character by character into array
+            for (int i = 0; i < input.length(); i++) {
+                arr[i] = input.charAt(i);
+            }
+            int n = input.length();
+            int l = 0, r = n - 1;
+
+            // Count of odd numbers
+            int k = 0;
+
+            for (int i = 0; i < arr.length; i++) {
+
+                while (l < r) {
+
+                    // Find first even number from left side.
+                    while (arr[l] % 2 != 0) {
+                        l++;
+                        k++;
+                    }
+
+                    // Find first odd number from right side.
+                    while (arr[r] % 2 == 0 && l < r)
+                        r--;
+
+                    // Swap even number present on left and odd
+                    // number right.
+                    if (l < r) {
+
+                        // swap arr[l] arr[r]
+                        char temp = arr[l];
+                        arr[l] = arr[r];
+                        arr[r] = temp;
+                    }
+                }
+
+                // Sort odd number in descending order
+                Arrays.sort(arr, 0, k, Collections.reverseOrder());
+
+                // Sort even number in ascending order
+                Arrays.sort(arr, k, n);
+            }
+            return arr.toString();
+        }
     }
 
-    public boolean internetconnection() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnectedOrConnecting();
-    }
+        /*public boolean internetconnection() {
+            ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            return networkInfo != null && networkInfo.isConnectedOrConnecting();
+        }*/
 
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-        super.onPointerCaptureChanged(hasCapture);
-    }
+        /*@Override
+        public void onPointerCaptureChanged ( boolean hasCapture){
+            super.onPointerCaptureChanged(hasCapture);
+        }*/
 }
