@@ -10,7 +10,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -27,11 +26,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         et = (EditText) findViewById(R.id.Mtknr_eingeben);
         send = (Button) findViewById(R.id.sendbutton);
         btn = (Button) findViewById(R.id.berechne);
+        tv = (TextView) findViewById(R.id.textView);
 
         send.setOnClickListener(this);
         btn.setOnClickListener(this);
 
     }
+
     @Override
     public void onClick(View view) {
 
@@ -49,20 +50,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     e.printStackTrace();
                 }
 
-                answer = messageSender.getanswer();
+                answer = messageSender.getAnswer();
                 break;
             case R.id.berechne:
                 answer = berechnung(tv.getText().toString());
+                break;
         }
         tv.setText(answer);
+        //Toast.makeText(this,answer,Toast.LENGTH_SHORT);
 
-
-        /*} else {
-        Toast.makeText(getApplicationContext(), "No Internet Connection!", Toast.LENGTH_SHORT).show();
-        }*/
 
     }
-
 
 
     public String berechnung(String input) {
@@ -75,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 arr[i] = input.charAt(i);
             }
             int n = input.length();
+            String answer = "";
             int l = 0, r = n - 1;
 
             // Count of odd numbers
@@ -104,25 +103,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         arr[r] = temp;
                     }
                 }
-
-                // Sort odd number in descending order
-                Arrays.sort(arr, 0, k, Collections.reverseOrder());
-
-                // Sort even number in ascending order
-                Arrays.sort(arr, k, n);
             }
+            char[] oddnumbers = new char[]{};
+            for (int i = k; i < k; i++) {
+                oddnumbers[i] = arr[i];
+            }
+            char[] evennumbers = new char[]{};
+            for (int z = arr.length - k;z < arr.length;z++){
+                evennumbers[z] = arr[z];
+            }
+            answer = ascendingorder(evennumbers.toString() + ascendingorder(oddnumbers.toString()));
+            answer = answer.replaceAll("\\D+", "");
             return arr.toString();
         }
     }
 
-        /*public boolean internetconnection() {
-            ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-            return networkInfo != null && networkInfo.isConnectedOrConnecting();
-        }*/
-
-        /*@Override
-        public void onPointerCaptureChanged ( boolean hasCapture){
-            super.onPointerCaptureChanged(hasCapture);
-        }*/
+    public String ascendingorder(String str) {
+        char[] array = str.toCharArray();
+        Arrays.sort(array);
+        return Arrays.toString(array);
+    }
 }
